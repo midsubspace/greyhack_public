@@ -10,7 +10,7 @@ for wifi in wifi_list //prints a list of the wifi networks
     count=count+1
 end for
 op=user_input("Pick network to connect to:").to_int;op=op-1 //gets user's pick
-network=wifi_list[op].split(" ")
+network=wifi_list[op].split(" ")//the network that the user chose
 bssid=network[0]//gets the bssid of the chosen network
 percent=network[1]//gets the strength of the chosen network
 essid=network[2]//gets the essid of the chosen network
