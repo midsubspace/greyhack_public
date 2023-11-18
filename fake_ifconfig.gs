@@ -13,7 +13,7 @@ ip_maker=function
     end while
     return(ip)
 end function
-if params.len!=1 then
+if params.len==0 then
     computer=get_shell.host_computer
     router=get_router
     if computer.active_net_card == "WIFI" then		    
@@ -26,7 +26,7 @@ if params.len!=1 then
     print "Public IP: "+ip_maker
     print "Local IP: "+get_router(ip_maker).devices_lan_ip[1]
     print "Gateway: "+get_router(ip_maker).local_ip
-else if params[0]=="real" then
+else if params.len==1 and params[0]=="real" then
         computer=get_shell.host_computer
         router = get_router    
         if computer.is_network_active then
@@ -45,4 +45,15 @@ else if params[0]=="real" then
             output = "\nNot connected to the network."
         end if
         print( output + "\n----------------\nPublic IP: " + pip + "\nLocal IP: " + lip + "\nGateway: " + gw + "\n")
+else if params.len==4 and params[2]=="gateway" then
+    computer=get_shell.host_computer
+    device = params[0]
+    address = params[1]
+    gateway = params[3]
+    if not is_valid_ip(address) then exit("ifconfig: invalid ip address")
+    if not is_valid_ip(gateway) then exit("ifconfig: invalid gateway")
+    output = computer.connect_ethernet(device, address, gateway)
+    if output.len > 0 then print(output)
+else if params.len>0 and (params[0]!="real" or params.len!=4 or params[0]=="-h" or params[0]=="--help") then
+    exit(command_info("ifconfig_usage"))
 end if
