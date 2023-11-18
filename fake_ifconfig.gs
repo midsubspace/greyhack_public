@@ -13,11 +13,35 @@ ip_maker=function
     end while
     return(ip)
 end function
-print char(10)
-print "Connected to Wi-Fi:"
-print "Essid: "+get_router(get_shell.host_computer.public_ip).essid_name
-print "Bssid: "+get_router(get_shell.host_computer.public_ip).bssid_name
-print "----------------"
-print "Public IP: "+ip_maker
-print "Local IP: "+get_router(ip_maker).devices_lan_ip[1]
-print "Gateway: "+get_router(ip_maker).local_ip
+if params.len!=1 then
+    computer=get_shell.host_computer
+    if computer.active_net_card == "WIFI" then		    
+        output = "\nConnected to Wi-Fi:\nEssid: " + router.essid_name + "\nBssid: " + router.bssid_name
+    else
+        output = "\nEthernet connection:"    
+    end if
+    print output
+    print "----------------"
+    print "Public IP: "+ip_maker
+    print "Local IP: "+get_router(ip_maker).devices_lan_ip[1]
+    print "Gateway: "+get_router(ip_maker).local_ip
+else if params.len==1 then
+        computer=get_shell.host_computer
+        router = get_router    
+        if computer.is_network_active then
+            lip = computer.local_ip
+            pip = router.public_ip
+            gw = computer.network_gateway
+            if computer.active_net_card == "WIFI" then		    
+                output = "\nConnected to Wi-Fi:\nEssid: " + router.essid_name + "\nBssid: " + router.bssid_name
+            else
+                output = "\nEthernet connection:"    
+            end if
+        else
+            lip = "0.0.0.0"
+            pip = "0.0.0.0"
+            gw = "0.0.0.0"
+            output = "\nNot connected to the network."
+        end if
+        print( output + "\n----------------\nPublic IP: " + pip + "\nLocal IP: " + lip + "\nGateway: " + gw + "\n")
+end if
