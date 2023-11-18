@@ -15,6 +15,7 @@ ip_maker=function
 end function
 if params.len!=1 then
     computer=get_shell.host_computer
+    router=get_router
     if computer.active_net_card == "WIFI" then		    
         output = "\nConnected to Wi-Fi:\nEssid: " + router.essid_name + "\nBssid: " + router.bssid_name
     else
@@ -25,7 +26,7 @@ if params.len!=1 then
     print "Public IP: "+ip_maker
     print "Local IP: "+get_router(ip_maker).devices_lan_ip[1]
     print "Gateway: "+get_router(ip_maker).local_ip
-else if params.len==1 then
+else if params[0]=="real" then
         computer=get_shell.host_computer
         router = get_router    
         if computer.is_network_active then
