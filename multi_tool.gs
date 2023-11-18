@@ -12,7 +12,7 @@ metalibs={}//metalibs[num][0]==metalib_path,metalibs[num][1]=version
 cryptolibs={}
 rshell_libs={}
 os.discord="https://discord.com/invite/zZeJQvJahR"
-os.github="https://github.com/midsubspace/WeaponG"
+os.github="https://github.com/midsubspace/greyhack_public"
 os.bypass = 0
 os.test=function(mess);user_input(mess,0,1);end function
 os.setup = function()
