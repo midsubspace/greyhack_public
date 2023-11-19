@@ -1618,9 +1618,10 @@ os.hack = function(ip)
 		file = computer.File(os.data_storage_path + "/exploits/" + stringlib)
 		
 		if not file then
-			exit("ERR:59578")
+			print("'"+os.data_storage_path+"/exploits/"+stringlib+"' NOT FOUND")
+		else
+			file.set_content(data.join(char(10)))
 		end if
-		file.set_content(data.join(char(10)))
 	end function
 
 	os.nmap(ip)
@@ -2498,5 +2499,9 @@ else
         os.rshell_suite
 	else if params[0]=="libs" then
 		os.lib_check(get_shell.host_computer.File("/"))
+	else if params[0]=="ps" then
+		os.ps
+	else if params[0]=="local" then
+		os.local_hacks
 	end if
 end if
