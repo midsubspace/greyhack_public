@@ -1525,19 +1525,10 @@ os.handler = function(result, ip)
 		user_list = computer.File(os.data_storage_path + "/user_list")
 
 		for user in users
-			computer.create_folder(os.data_storage_path + "/remoteusers/" + public_ip, user.name)
-			computer.create_folder(os.data_storage_path + "/remoteusers/" + public_ip + "/" + user.name, "Downloads")
-
-			for file in result.host_computer.File("/home/" + user.name).get_files
-				os.server.scp(result.host_computer.File(file.path), os.data_storage_path + "/remoteusers/" + ip + "/" + user.name, result)
-			end for
-
-			for file in result.host_computer.File("/home/" + user.name + "/Downloads").get_files
-				result.scp(result.host_computer.File(file.path), os.data_storage_path + "/remoteusers/" + ip + "/" + user.name + "/Downloads", os.server)
-			end for
-
+			if user.has_permission("r")==false then continue
+			download=result.scp(user.path, os.data_storage_path + "/remoteusers/"+public_ip,os.server)
+			if typeof(download)=="string" then; print download;wait 5;end if
 			email = "none"
-
 			if result.host_computer.File("/home/" + user.name + "/Config/Mail.txt") then
 				email = result.host_computer.File("/home/" + user.name + "/Config/Mail.txt").get_content.split(":")[0]
 				user_list.set_content(user_list.get_content + char(10) + ip + ":" + computer.local_ip + ":" + user.name + ":" + email)
