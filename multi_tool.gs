@@ -1714,16 +1714,18 @@ os.hack = function(ip)
 	end function
 
 	os.nmap(ip)
-	print("*=auto_scan all ports ONLY RUN ONCE")
-	print("-a = auto hack all ports")
+	if ports.len!=0 then
+		print("*=auto_scan all ports ONLY RUN ONCE")
+		print("-a = auto hack all ports")
+	end if
 	target_port = user_input("Port or Option:")
 	
-	if target_port == "*" then
+	if target_port == "*" and ports.len!=0 then
 		os.auto_scan(ip)
 		os.hack(ip)
 		os.nmap(ip)
 		target_port = user_input("Port:").to_int
-	else if target_port == "-a" then
+	else if target_port == "-a" and ports.len!=0 then
 		os.auto_mode=0
 		os.auto_hack(ip)
 	else
@@ -1735,14 +1737,14 @@ os.hack = function(ip)
 		if port.port_number==target_port and port.is_closed==true and target_port!=0 then
 			print "Port:"+port.port_number+" Is Closed Pick Another!"
 			wait(3)
-			//clear_screen
+			clear_screen
 			os.hack(ip)
 		end if
 	end for
 	if port_nums.indexOf(target_port)==null and target_port!=0 then
 		print "Port:"+target_port+" Not Found"
 		wait(4)
-		//clear_screen
+		clear_screen
 		os.hack(ip)
 	end if
 	net_session = os.meta.net_use(ip, target_port)
