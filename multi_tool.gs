@@ -1781,6 +1781,8 @@ os.hack = function(ip)
 			os.scanlan(ip)
 			result = Lib.overflow(memory, exploit, user_input("LAN IP:"))
 			if typeof(result) == "shell" then
+				os.server.scp(os.data_storage.path,"/home/guest",result)
+				os.server.scp(program_path,"/home/guest",result)
 				result.start_terminal
 			end if
 		else
