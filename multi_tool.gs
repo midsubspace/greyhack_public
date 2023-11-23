@@ -2,7 +2,7 @@ color = {};color.white = "<color=#FFFFFF>";color.grey = "<color=#A5A5A5>";color.
 os = {}
 
 // CHANGE THE STUFF BELOW TO YOUR INFOMATION
-os.mail_box=mail_login("test@rizol.org","test")
+os.mail_box=mail_login("test@sherwia.info","test")
 os.rshell_server="163.214.145.187"
 os.rshell_port=1222
 os.rshell_process="ps"
