@@ -99,9 +99,12 @@ os.status = function()
 	end if
 
 	if os.hackshop != "" then
-		print("Hackshop Status:<color=green>ONLINE")
+		print("Hackshop:<color=green>"+os.hackshop)
 	else
-		print("Hackshop Status:<color=red>OFFLINE")
+		os.computer.File(os.settings_path+"/hackshop").set_content(os.lib_finder(1))
+		os.hackshop=os.computer.File(os.settings_path+"/hackshop").get_content
+		clear_screen
+		os.status
 	end if
 end function
 
@@ -971,7 +974,7 @@ os.ip = function()
 	return (ip)
 end function
 
-os.lib_finder = function()
+os.lib_finder = function(mode)
     print(color.yellow+"RUNNING OS.LIB_FINDER fcn")
     counter = {"ips_checked": 0, "matches_found": 0}
 	matches = []
@@ -1040,19 +1043,28 @@ os.lib_finder = function()
 
 	services = ["http", "ftp", "ssh", "smtp", "repository", "employees", "students", "criminals", "router","rshell"]
 	num = 1
-	for service in services
-		if service=="rshell" then 
-			print(num + ")" + service+color.red+" WARNING THIS MAY TAKE HOURS")
-		else
-			print(num + ")" + service)
-		end if
-		num = num + 1
-	end for
-	service = (services[(user_input("Service:").to_int) - 1])
-	ver = user_input("ver:")
-	search(service, user_input("Amount to find:"), ver)
-	//clear_screen
-	print("It took " + counter.ips_checked + " tries to find " + matches.len + " ips")
+	if mode==1 then
+		service="repository"
+		ver="*"
+		amount=1
+		os.bypass=1
+		search("repository","1","*")
+	else
+		for service in services
+			if service=="rshell" then 
+				print(num + ")" + service+color.red+" WARNING THIS MAY TAKE HOURS")
+			else
+				print(num + ")" + service)
+			end if
+			num = num + 1
+		end for
+		service = (services[(user_input("Service:").to_int) - 1])
+		ver = user_input("ver:")
+		search(service, user_input("Amount to find:"), ver)
+		//clear_screen
+		print("It took " + counter.ips_checked + " tries to find " + matches.len + " ips")
+	end if
+
 	if os.bypass != 1 then
 		get_shell.host_computer.create_folder(os.data_storage_path, "servicefinder")
 		get_shell.host_computer.create_folder(os.data_storage_path + "/servicefinder", service)
@@ -1076,9 +1088,9 @@ os.lib_finder = function()
 		print(output_file.get_content)
 	else
 		for match in matches
-			print(match)
+			return(match)
 		end for
-
+		os.bypass=0
 	end if
 end function
 
