@@ -31,7 +31,7 @@ os.setup = function()
 			os.server_type = "local_root"
 		end if
 	end if
-	os.version = "Alpha 1.1"
+	os.version = "Alpha 1.2"
 	os.user = active_user
 	os.shell = os.server
 	os.computer = os.server.host_computer
@@ -59,7 +59,7 @@ os.setup = function()
 	if os.computer.File(os.settings_path+"/mode").get_content=="" then os.computer.File(os.settings_path+"/mode").set_content("cli")
 	os.computer.touch(os.settings_path,"hackshop")
 	os.computer.touch(os.settings_path,"version")
-	if os.computer.File(os.settings_path+"/version").get_content=="" then os.computer.File(os.settings_path+"/version").set_content(os.version)
+	if os.computer.File(os.settings_path+"/version").get_content!=os.version then os.computer.File(os.settings_path+"/version").set_content(os.version)
 	os.computer.touch(os.settings_path,"secretword")
 	for file in os.settings_folder.get_files
 		if file.name=="mode" then os.mode=file.get_content
@@ -1117,12 +1117,20 @@ os.info_grab = function(obj, ip)
 	servers = ""
 	password_file = device.File("/etc/passwd")
 	
-	if not password_file then
-		return ("Password File Not Found")
-	end if
-	
-	if password_file.has_permission("r") then
-		computer_password = ip + ":" + char(10) + password_file.get_content
+	if password_file and password_file.has_permission("r") then
+		lines=password_file.get_content.split(char(10))
+		computer_passwords=[]
+		for line in lines
+			if line.split(":")!=2 then continue
+			user=line.split(":")[0]
+			pwd=os.brute_force(line.split(":")[1])
+			computer_passwords.push([user,pwd])
+		end for
+		computer_password=ip+":"+char(10)
+		for item in computer_passwords
+			computer_password=computer_password+item[0]+":"+item[1]+char(10)
+		end for
+		print(computer_password)
 	end if
 
 	for user in users
@@ -1131,19 +1139,40 @@ os.info_grab = function(obj, ip)
 		mail_info = device.File("/home/" + user.name + "/Config/Mail.txt")
 		server_map = device.File("/home/" + user.name + "/Config/Map.conf")
 		
-		if bank_info then
-			bank = bank + bank_info.get_content + char(10)
+		if bank_info and bank_info.has_permission("r") then
+			lines=bank_info.get_content.split(char(10))
+			bank_passwords=[]
+			for line in lines
+				user=line.split(":")[0]
+				pwd=os.brute_force(line.split(":")[1])
+				bank_passwords.push([user,pwd])
+			end for
+			for item in bank_passwords
+				bank=bank+item[0]+":"+item[1]+char(10)
+			end for
+			print(bank)
 		end if
 		
-		if mail_info then
-			mail = mail + ip + ":" + mail_info.get_content + char(10)
+		if mail_info and mail_info.has_permission("r") then
+			lines=mail_info.get_content.split(char(10))
+			mail_passwords=[]
+			for line in lines
+				user=line.split(":")[0]
+				pwd=os.brute_force(line.split(":")[1])
+				mail_passwords.push([user,pwd])
+			end for
+			mail=ip+":"+char(10)
+			for item in mail_passwords
+				mail=mail+item[0]+":"+item[1]+char(10)
+			end for
+			print(mail)
 		end if
 		
-		if web_info then
+		if web_info and web_info.has_permission("r") then
 			web = web + web_info.get_content + char(10)
 		end if
 		
-		if server_map then
+		if server_map and server_map.has_permission("r") then
 			servers = servers + server_map.get_content + char(10)
 		end if
 	end for
@@ -1155,12 +1184,33 @@ os.info_grab = function(obj, ip)
 	mail_info = device.File("/root/Config/Mail.txt")
 	server_map = device.File("/root/Config/Map.conf")
 	
-	if bank_info then
-		bank = bank + bank + bank_info.get_content + char(10)
+	if bank_info and bank_info.has_permission("r") then
+		lines=bank_info.get_content.split(char(10))
+		bank_passwords=[]
+		for line in lines
+			user=line.split(":")[0]
+			pwd=os.brute_force(line.split(":")[1])
+			bank_passwords.push([user,pwd])
+		end for
+		for item in bank_passwords
+			bank=bank+item[0]+":"+item[1]+char(10)
+		end for
+		print(bank)
 	end if
 	
-	if mail_info then
-		mail = mail + ip + ":" + mail_info.get_content + char(10)
+	if mail_info and mail_info.has_permission("r") then
+		lines=mail_info.get_content.split(char(10))
+		mail_passwords=[]
+		for line in lines
+			user=line.split(":")[0]
+			pwd=os.brute_force(line.split(":")[1])
+			mail_passwords.push([user,pwd])
+		end for
+		mail=ip+":"+char(10)
+		for item in mail_passwords
+			mail=mail+item[0]+":"+item[1]+char(10)
+		end for
+		print(mail)
 	end if
 	
 	if web_info then
@@ -1176,12 +1226,39 @@ os.info_grab = function(obj, ip)
 		computer.touch(os.data_storage_path, "bankacc")
 		bankfile = computer.File(os.data_storage_path + "/bankacc")
 		bankfile.set_content(bankfile.get_content + bank)
+			lines=bankfile.get_content.split(char(10))
+			scrubbed_list=[]
+			for line in lines
+				if scrubbed_list.indexOf(line)==null then 
+					scrubbed_list.push(line)
+					print line
+				else
+					yield
+				end if
+			end for
+			bankfile.set_content("")
+			for item in scrubbed_list
+				bankfile.set_content(bankfile.get_content+item+char(10))
+			end for
 	end if
 
 	if mail != "" then
 		computer.touch(os.data_storage_path, "mailfile")
 		mailfile = computer.File(os.data_storage_path + "/mailfile")
 		mailfile.set_content(mailfile.get_content + mail)
+		lines=mailfile.get_content.split(char(10))
+		scrubbed_list=[]
+		for line in lines
+			if scrubbed_list.indexOf(line)==null then 
+				scrubbed_list.push(line)
+			else
+				yield
+			end if
+		end for
+		mailfile.set_content("")
+		for item in scrubbed_list
+			mailfile.set_content(mailfile.get_content+item+char(10))
+		end for
 	end if
 
 	if web != null and web != "" then
@@ -2438,7 +2515,7 @@ else
 	else if params[0] == "lib-finder" then
 		os.lib_finder
 	else if params[0] == "info-grab" then
-		os.info_grab
+		os.info_grab(get_shell,get_shell.host_computer.public_ip)
 	else if params[0] == "server-database" then
 		os.server_database
 	else if params[0] == "hack" then
