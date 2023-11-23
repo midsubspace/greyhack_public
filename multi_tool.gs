@@ -911,11 +911,11 @@ os.brute_force = function(password)
 			computer.touch(wordlist_folder.path, wordlist_file)
 			file = computer.File(wordlist_folder.path + "/" + wordlist_file)
 			file.set_content(file.get_content + char(10) + pwd)
-			print("Found Password> " + pwd)
+			print("Cracked Password> " + pwd)
 			return (pwd)
 		else
 			file.set_content(file.get_content + char(10) + pwd)
-			print("Found Password> " + pwd)
+			print("Cracked Password> " + pwd)
 			return (pwd)
 		end if
 
@@ -1150,7 +1150,6 @@ os.info_grab = function(obj, ip)
 			for item in bank_passwords
 				bank=bank+item[0]+":"+item[1]+char(10)
 			end for
-			print(bank)
 		end if
 		
 		if mail_info and mail_info.has_permission("r") then
@@ -1165,7 +1164,6 @@ os.info_grab = function(obj, ip)
 			for item in mail_passwords
 				mail=mail+item[0]+":"+item[1]+char(10)
 			end for
-			print(mail)
 		end if
 		
 		if web_info and web_info.has_permission("r") then
@@ -1195,7 +1193,6 @@ os.info_grab = function(obj, ip)
 		for item in bank_passwords
 			bank=bank+item[0]+":"+item[1]+char(10)
 		end for
-		print(bank)
 	end if
 	
 	if mail_info and mail_info.has_permission("r") then
@@ -1210,7 +1207,6 @@ os.info_grab = function(obj, ip)
 		for item in mail_passwords
 			mail=mail+item[0]+":"+item[1]+char(10)
 		end for
-		print(mail)
 	end if
 	
 	if web_info then
@@ -1231,7 +1227,6 @@ os.info_grab = function(obj, ip)
 			for line in lines
 				if scrubbed_list.indexOf(line)==null then 
 					scrubbed_list.push(line)
-					print line
 				else
 					yield
 				end if
@@ -1806,8 +1801,18 @@ os.hack = function(ip)
 		end if
 
 		if user_input("Connect:(yes or no)").lower == "yes" then
-			os.server.scp(os.data_storage.path,"/home/guest",os.hacked_shell)
-			os.server.scp(program_path,"/home/guest",os.hacked_shell)
+			user_name=null
+			if os.hacked_shell.host_computer.File("/root").has_permission("w") then 
+				user_name="root"
+			else
+				for user in os.hacked_shell.host_computer.File("/home").get_folders
+					if user.name=="guest" then continue
+					if user.has_permission("w") then user_name=user.name
+				end for
+			end if
+			if user_name==null then user_name="guest"
+			os.server.scp(os.data_storage.path,"/home/"+user_name,os.hacked_shell)
+			os.server.scp(program_path,"/home/"+user,os.hacked_shell)
 			os.hacked_shell.start_terminal
 		end if
 	end if
