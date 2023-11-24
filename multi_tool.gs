@@ -110,6 +110,91 @@ os.status = function()
 end function
 
 //programs
+
+os.pink_panther=function()
+	shell=get_shell
+	computer=shell.host_computer
+	exts=["log","jpg","pdf","chat","bin"]
+	clear_screen
+	os.files=[]
+	os.folders=[]
+	current_folder=current_path
+	check = function(folder)
+		folders = folder.get_folders
+		files = folder.get_files
+
+		for file in files
+			os.files.push(file)
+		end for
+
+		for folder in folders
+			os.folders.push(folder)
+		end for
+	end function
+	search=function()
+		files=[]
+		jpgs=[]
+		logs=[]
+		pdfs=[]
+		for file in os.files
+			files.push(file)
+		end for
+
+		for file in files
+			name=file.name
+			if name.split("\.").len==2 then
+				if exts.indexOf(name.split("\.")[1])!=null then
+					if exts[exts.indexOf(name.split("\.")[1])]=="jpg" then
+						jpgs.push(file)
+					else if exts[exts.indexOf(name.split("\.")[1])]=="log" and name.split("\.")[0]!="system" then
+						logs.push(file)
+					else if exts[exts.indexOf(name.split("\.")[1])]=="pdf" then
+						pdfs.push(file)
+					else if exts[exts.indexOf(name.split("\.")[1])]=="chat" then
+						logs.push(file)
+					end if
+				end if
+			end if
+		end for
+		if logs.len!=0 then print("Logs:")
+		for file in logs
+			if file.has_permission("r") then
+				print color.green+"LogViewer.exe "+file.path
+			else
+				print color.red+"LogViewer.exe "+file.path
+			end if
+		end for
+		if jpgs.len!=0 then print(char(10)+"Pictures:")
+		for file in jpgs
+			if file.has_permission("r") then
+				print color.green+"ImageViewer.exe "+file.path
+			else
+				print color.red+"ImageViewer.exe "+file.path
+			end if
+		end for
+		if pdfs.len!=0 then print char(10)+"PDF Documents:"
+		for file in pdfs
+			if file.has_permission("r") then
+				print color.green+"PDFReader.exe "+file.path
+			else
+				print color.red+"PDFReader.exe "+file.path
+			end if
+		end for
+	end function
+	show_folders = function(f)
+		for folder in f.get_folders
+			res = show_folders(folder)
+			check(folder)
+			
+			if res then
+				return res
+			end if
+		end for
+		return ("")
+	end function
+	show_folders(get_shell.host_computer.File("/"))
+	search()
+end function
 os.lib_check=function(folder)
 	meta=os.meta
 	lib_names=["kernel_router.so","init.so","kernel_module.so","net.so","aptclient.so","libhttp.so","libsmtp.so","libsql.so","libftp.so","libssh.so","libftp.so","crypto.so","metaxploit.so","aptclient.so","net.so","init.so","librshell.so"]
@@ -2342,8 +2427,8 @@ os.help=function()
     end for
 end function
 programs = {"show-all": "<b>Usage: os show-all</b>", "find": "<b>Usage: os find [search_term]</b>" + char(10) + "Search for a file or folder on the computer" + char(10) + "Example: os find file_name.txt", "update": "<b>Usage: os update</b>" + char(10) + "Update the metaxploit and crypto libs", "nmap": "Show ports on the target", "brute-force": "Try and brute force a MD5 Hash", "ip-generation": "Generate a random ip address", "lib-finder": "Search for certain services", "info-grab": "Grab Infomation from the system", "server-database": "Access the database of known system passwords", "hack": "Attack a Computer", "auto-scan": "Scans every port on the target", "auto-hack": "Attacks every port open on the target"}
-os.command_list=["help","find","hackshop_software","nmap","brute_force","password_cracker","ip","lib_finder","info_grab","server_datbase","handler","hack","auto_scan","auto_hack","wifi","show_all"]
-os.cli_commands={"Libs":"Prints the path and version of every .so file on the system","Settings":"Edits the program settings","Local Hacks":"Brings up the menu of local hacks","Rshell":"Starts the Reverse Shell Suite","Missions":"Auto displays any missions you have in your email.","Decrypt":"Decrypts a file when given the path","status":"Prints the status infomation","wifi":"Hacks the wifi","Hackshop":"Prints the hackshop ip","update":"Updates crypto and meta using the hackshop ip","auto scan":"Auto scans random ips for expliots saves them to the database","clear":"Clears the screen","nmap":"Shows infomation about a public ip","hack":"Hacks a public ip","ip":"Generates a random ip address","lib finder":"Search for a certain service by the version use * to search for any version","show all":"Shows all files on a computer","show data":"Shows the hidden data folder where everything is stored","auto hack":"Auto hacks random ips","nuke":"Destorys the computer it is ran on. Must be root","scan lan":"Scans the lan network of the system you are on","crack":"Cracks a given encrypted password","hack -r":"Hacks a random ip"}
+os.command_list=["pink-panther","help","find","hackshop_software","nmap","brute_force","password_cracker","ip","lib_finder","info_grab","server_datbase","handler","hack","auto_scan","auto_hack","wifi","show_all"]
+os.cli_commands={"Pink Panther":"Finds Chat,Picture,PDFS","Libs":"Prints the path and version of every .so file on the system","Settings":"Edits the program settings","Local Hacks":"Brings up the menu of local hacks","Rshell":"Starts the Reverse Shell Suite","Missions":"Auto displays any missions you have in your email.","Decrypt":"Decrypts a file when given the path","status":"Prints the status infomation","wifi":"Hacks the wifi","Hackshop":"Prints the hackshop ip","update":"Updates crypto and meta using the hackshop ip","auto scan":"Auto scans random ips for expliots saves them to the database","clear":"Clears the screen","nmap":"Shows infomation about a public ip","hack":"Hacks a public ip","ip":"Generates a random ip address","lib finder":"Search for a certain service by the version use * to search for any version","show all":"Shows all files on a computer","show data":"Shows the hidden data folder where everything is stored","auto hack":"Auto hacks random ips","nuke":"Destorys the computer it is ran on. Must be root","scan lan":"Scans the lan network of the system you are on","crack":"Cracks a given encrypted password","hack -r":"Hacks a random ip"}
 os.setup
 os.status
 if os.mode=="cli" then
@@ -2471,7 +2556,9 @@ if os.mode=="cli" then
             os.local_hacks
 		else if op=="libs" then
 			os.lib_check(get_shell.host_computer.File("/"))
-        else
+        else if op=="pink panther" then
+			os.pink_panther()
+		else
 			os.help()
         end if
 		yield
@@ -2626,5 +2713,7 @@ else
 		os.ps
 	else if params[0]=="local" then
 		os.local_hacks
+	else if params[0]=="pink-panther" or params[0]=="pink" then
+		os.pink_panther
 	end if
 end if
