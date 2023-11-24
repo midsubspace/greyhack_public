@@ -2419,7 +2419,7 @@ end function
 os.show_data=function()
     get_shell.host_computer.File(os.data_storage_path).rename("data_folder")
     user_input("Done?",false,true)
-    get_shell.host_computer.File(home_dir+"/os").rename(".os")
+    get_shell.host_computer.File(home_dir+"/data_folder").rename(".os")
 end function
 os.help=function()
 	for command in os.cli_commands
