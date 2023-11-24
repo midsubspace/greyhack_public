@@ -1023,6 +1023,7 @@ os.lib_finder = function(mode)
 				for port in ports
 					
 					if router.port_info(port).split(" ")[0] == service then
+						counter.matches_found=counter.matches_found+1
 						matches.push(ip)
 					end if
 				end for
@@ -1031,13 +1032,13 @@ os.lib_finder = function(mode)
 				for port in ports
 					
 					if router.port_info(port) == service + " " + ver then
+						counter.matches_found=counter.matches_found+1
 						matches.push(ip)
 					end if
 				end for
 
 			end if
-
-			print("Scanned:" + counter.ips_checked + " Devices" + char(10) + "Found:" + counter.matches_found + " Matches", 1)
+			print("Scanned:" + counter.ips_checked + " Devices" + char(10) + "Found:" + counter.matches_found + " Matches",1)
 			yield
 		end while
 	end function
@@ -1082,11 +1083,10 @@ os.lib_finder = function(mode)
 			else
 				output_file.set_content(output_file.get_content + char(10) + match)
 			end if
-
+			print match
 		end for
 
 		print("Matches stored at:" + output_file.path)
-		print(output_file.get_content)
 	else
 		for match in matches
 			return(match)
