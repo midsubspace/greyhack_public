@@ -1144,6 +1144,7 @@ os.info_grab = function(obj, ip)
 			lines=bank_info.get_content.split(char(10))
 			bank_passwords=[]
 			for line in lines
+				if line.split(":").len!=2 then continue
 				user=line.split(":")[0]
 				pwd=os.brute_force(line.split(":")[1])
 				bank_passwords.push([user,pwd])
@@ -1157,6 +1158,7 @@ os.info_grab = function(obj, ip)
 			lines=mail_info.get_content.split(char(10))
 			mail_passwords=[]
 			for line in lines
+				if line.split(":").len!=2 then continue
 				user=line.split(":")[0]
 				pwd=os.brute_force(line.split(":")[1])
 				mail_passwords.push([user,pwd])
