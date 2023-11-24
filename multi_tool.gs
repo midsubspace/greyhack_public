@@ -2,6 +2,7 @@ color = {};color.white = "<color=#FFFFFF>";color.grey = "<color=#A5A5A5>";color.
 os = {}
 
 // CHANGE THE STUFF BELOW TO YOUR INFOMATION
+os.debug_info=0 //CHANGE TO 1 TO SHOW INFO MESSAGES
 os.mail_box=mail_login("test@sherwia.info","test")
 os.rshell_server="163.214.145.187"
 os.rshell_port=1222
@@ -179,7 +180,7 @@ os.ps=function()
     print format_columns(data)
 end function
 os.rshell_suite=function()
-    print(color.yellow+"RUNNING OS.RSHELL_SUITE FCN")
+    if os.debug_info!=0 then print(color.yellow+"RUNNING OS.RSHELL_SUITE FCN")
     //clear_screen
     start_server=function()
         if os.hackshop==null then os.hackshop=user_input("Hackshop IP:")
@@ -306,7 +307,7 @@ os.rshell_suite=function()
     end if
 end function
 os.edit_settings=function()
-    print(color.yellow+"RUNNING OS.EDIT_SETTINGS FCN")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.EDIT_SETTINGS FCN")
 	setting_folder=os.settings_folder
 	count=0
 	settings=[]
@@ -325,7 +326,7 @@ os.edit_settings=function()
 	exit("Program Was Shutdown For Setting Changes To Take Affect!")
 end function
 os.mission_finder=function()
-    print(color.yellow+"RUNNING OS.MISSION_FINDER FCN")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.MISSION_FINDER FCN")
     mission_parser=function(mission,mode)
         lines=mission.split(char(10))
         //get_shell.host_computer.File(home_dir+"/email").set_content(lines)
@@ -470,7 +471,7 @@ os.mission_finder=function()
 		mission_parser(mail_box.read(missions[mission_sel].split(char(10))[2].split(":")[1].split(" ")[1]),"hack")
 end function
 os.decrypt_file=function()
-    print(color.yellow+"RUNNING OS.DECRYPT_FILE FCN")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.DECRYPT_FILE FCN")
 	crypto=os.crypto
 	if not crypto then exit("No Crypto.so")
 	computer=os.server.host_computer
@@ -507,7 +508,7 @@ os.decrypt_file=function()
 	print(file.get_content)
 end function
 os.find=function(term,mode)
-    print(color.yellow+"RUNNING OS.FIND FCN")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.FIND FCN")
 	found_files=[]
 	found_folders=[]
 	search_files=function(folder,term)
@@ -647,7 +648,7 @@ os.find=function(term,mode)
 end function
 
 os.hackshop_software = function()
-    print(color.yellow+"RUNNING OS.HACKSHOP_SOFTWARE FCN")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.HACKSHOP_SOFTWARE FCN")
 	if os.hackshop == "" then
 		os.hackshop = user_input("HackShop IP:")
 	end if
@@ -685,7 +686,7 @@ os.hackshop_software = function()
 end function
 
 os.nmap = function(ip)
-    print(color.yellow+"RUNNING OS.NMAP FCN")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.NMAP FCN")
 	if ip == null then
 		ip = user_input("IP Address:")
 	end if
@@ -858,7 +859,7 @@ os.nmap = function(ip)
 end function
 
 os.brute_force = function(password)
-    print(color.yellow+"RUNNING OS.BRUTE_FORCE FCN")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.BRUTE_FORCE FCN")
     server = os.server
 	computer = server.host_computer
 	computer.create_folder(os.data_storage.path, "wordlists")
@@ -925,7 +926,7 @@ os.brute_force = function(password)
 end function
 
 os.password_cracker = function(origFile)
-    print(color.yellow+"RUNNING OS.PASSWORD_CRACKER FCN")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.PASSWORD_CRACKER FCN")
     get_password = function(userpass)
 		if userpass.len != 2 then
 			exit("Decipher:" + origFile.path)
@@ -956,7 +957,7 @@ os.password_cracker = function(origFile)
 end function
 
 os.ip = function()
-    print(color.yellow+"RUNNING OS.IP fcn")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.IP fcn")
     computer = os.server.host_computer
 
 	ip_gen=function();return([floor(rnd * 255) + 1, floor(rnd * 255) + 1, floor(rnd * 255) + 1, floor(rnd * 255) + 1].join("."));end function
@@ -975,7 +976,7 @@ os.ip = function()
 end function
 
 os.lib_finder = function(mode)
-    print(color.yellow+"RUNNING OS.LIB_FINDER fcn")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS.LIB_FINDER fcn")
     counter = {"ips_checked": 0, "matches_found": 0}
 	matches = []
 
@@ -1095,7 +1096,7 @@ os.lib_finder = function(mode)
 end function
 
 os.info_grab = function(obj, ip)
-    print(color.yellow+"RUNNING OS._INFO_GRAB fcn")
+	if os.debug_info!=0 then print(color.yellow+"RUNNING OS._INFO_GRAB fcn")
 	if obj and typeof(obj) == "shell" then
 		host = obj
 		device = host.host_computer
@@ -1493,7 +1494,7 @@ os.scanlan=function(ip)
 	print(char(10)+"Router Pings["+color.white+"<b>"+deviceList.len+"</color>"+"</b>]"+char(10)+"Device Pings:["+color.grey+"<b>"+sub_devices.len+"</color></b>]")
 end function
 os.handler = function(result, ip)
-	print("<color=yellow>" + typeof(result))
+	if os.debug_info!=0 then print("<color=yellow>" + typeof(result))
 	if typeof(result) == "file" then
 		file = result
 		
@@ -2326,7 +2327,7 @@ os.reboot=function()
     get_shell.launch(program_path)
 end function
 os.show_data=function()
-    get_shell.host_computer.File(os.data_storage_path).rename("os")
+    get_shell.host_computer.File(os.data_storage_path).rename("data_folder")
     user_input("Done?",false,true)
     get_shell.host_computer.File(home_dir+"/os").rename(".os")
 end function
