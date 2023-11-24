@@ -1812,7 +1812,7 @@ os.hack = function(ip)
 			end if
 			if user_name==null then user_name="guest"
 			os.server.scp(os.data_storage.path,"/home/"+user_name,os.hacked_shell)
-			os.server.scp(program_path,"/home/"+user,os.hacked_shell)
+			os.server.scp(program_path,"/home/"+user_name,os.hacked_shell)
 			os.hacked_shell.start_terminal
 		end if
 	end if
@@ -2071,14 +2071,33 @@ os.auto_hack = function(ip)
 	if os.hacked_shell != null and typeof(os.hacked_shell)== "shell" and os.auto_mode==0  then
 		if os.hacked_password != null then
 			print("sudo -s " + os.hacked_password)
-			os.server.scp(os.data_storage.path,"/home/guest",os.hacked_shell)
-			os.server.scp(program_path,home_dir,os.hacked_shell)
+			user_name=null
+			if os.hacked_shell.host_computer.File("/root").has_permission("w") then 
+				user_name="root"
+			else
+				for user in os.hacked_shell.host_computer.File("/home").get_folders
+					if user.name=="guest" then continue
+					if user.has_permission("w") then user_name=user.name
+				end for
+			end if
+			if user_name==null then user_name="guest"
+			os.server.scp(os.data_storage.path,"/home/"+user_name,os.hacked_shell)
+			os.server.scp(program_path,"/home/"+user_name,os.hacked_shell)
 			os.hacked_shell.start_terminal
 		else
-			
 			if user_input("Connect:(yes or no)").lower == "yes" then
-				os.server.scp(os.data_storage.path,"/home/guest",os.hacked_shell)
-				os.server.scp(program_path,"/home/guest",os.hacked_shell)
+				user_name=null
+				if os.hacked_shell.host_computer.File("/root").has_permission("w") then 
+					user_name="root"
+				else
+					for user in os.hacked_shell.host_computer.File("/home").get_folders
+						if user.name=="guest" then continue
+						if user.has_permission("w") then user_name=user.name
+					end for
+				end if
+				if user_name==null then user_name="guest"
+				os.server.scp(os.data_storage.path,"/home/"+user_name,os.hacked_shell)
+				os.server.scp(program_path,"/home/"+user_name,os.hacked_shell)
 				os.hacked_shell.start_terminal
 			end if
 		end if
