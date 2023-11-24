@@ -1613,6 +1613,9 @@ os.handler = function(result, ip)
 
 		for user in users
 			if user.has_permission("r")==false then continue
+			computer.touch(os.data_storage_path + "/remoteusers/"+public_ip,"server_info")
+			server_file=computer.File(os.data_storage_path + "/remoteusers/"+public_ip+"/server_info")
+			if typeof(server_file)=="file" then server_file.set_content("Public IP:"+result.host_computer.public_ip+char(10)+"Lan:"+result.host_computer.local_ip)
 			download=result.scp(user.path, os.data_storage_path + "/remoteusers/"+public_ip,os.server)
 			if typeof(download)=="string" then; print download;wait 5;end if
 			email = "none"
