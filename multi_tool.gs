@@ -224,7 +224,9 @@ os.local_hacks=function()
 		print("Trying To Get Root Access")
 		for user in users
 			shell=get_shell(user,"password")
-			if typeof(shell)=="shell" then 
+			if typeof(shell)=="shell" then
+				if shell.host_computer.File("/etc/passwd").has_permission("r")==0 then continue
+				print shell.host_computer.File("/etc/passwd").get_content
 				root_pass=shell.host_computer.File("/etc/passwd").get_content.split(char(10))[0].split(":")[1]
 				rshell=get_shell("root",crypto.decipher(root_pass))
 				if typeof(rshell)=="shell" then
