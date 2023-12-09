@@ -72,6 +72,7 @@ os.setup = function()
 end function
 
 os.status = function()
+	if get_shell.host_computer.is_network_active==false then os.wifi()
 	print color.red+os.github
 	print color.red+os.discord
 	print("Version:"+os.version)
